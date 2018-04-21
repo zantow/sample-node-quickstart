@@ -28,7 +28,7 @@ pipeline {
           dir ('./charts/preview') {
            container('nodejs') {
              sh "make preview"
-             sh "./bin/jx preview --app $APP_NAME --dir ../.."
+             sh "${WORKSPACE}/bin/jx preview --app $APP_NAME --dir ../.."
            }
           }
         }
@@ -41,9 +41,9 @@ pipeline {
           container('nodejs') {
             // ensure we're not on a detached head
             sh "git checkout master"
-            sh "git config --global credential.helper store"
-            sh "./bin/jx step validate --min-jx-version 1.1.73"
-            sh "./bin/jx step git credentials"
+            sh "git config --globakl credential.helper store"
+            sh "${WORKSPACE}/bin/jx step validate --min-jx-version 1.1.73"
+            sh "${WORKSPACE}/bin/jx step git credentials"
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
           }
@@ -67,13 +67,13 @@ pipeline {
         steps {
           dir ('./charts/sample-node-quickstart') {
             container('nodejs') {
-              sh './bin/jx step changelog --version v\$(cat ../../VERSION)'
+              sh '${WORKSPACE}/bin/jx step changelog --version v\$(cat ../../VERSION)'
 
               // release the helm chart
               sh 'make release'
 
               // promote through all 'Auto' promotion Environments
-              sh './bin/jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
+              sh '${WORKSPACE}/bin/jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
             }
           }
         }
