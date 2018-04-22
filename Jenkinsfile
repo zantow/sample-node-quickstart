@@ -41,7 +41,7 @@ pipeline {
           container('nodejs') {
             // ensure we're not on a detached head
             sh "git checkout master"
-            sh "git config --globakl credential.helper store"
+            sh "git config --global credential.helper store"
             sh "${WORKSPACE}/bin/jx step validate --min-jx-version 1.1.73"
             sh "${WORKSPACE}/bin/jx step git credentials"
             // so we can retrieve the version in later steps
